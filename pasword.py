@@ -3,6 +3,7 @@
 import time
 pasword = []
 accounts = []
+user = ""
 def number_input(phrase, option):
     digit = ""
     while digit == "":
@@ -40,53 +41,91 @@ def login_menu():
     return  number_input("", otions)
 
 def add_acount():
+    global user
+    back = False
     age = number_input("enter your age", "")
     if age >= 13:
         in_loop = True
         while in_loop == True:
-            username = input("ener a username")
-            if username not in accounts:
-                in_loop = False
+            username = input("ener a username or type 0 to exit")
+            if username == 0:
+                back = True
             else:
-                print("username already in use")
-        in_loop = False
-        while in_loop == False:     
-            pasword = input("ener a pasword")
-            in_loop = validate_pasword(pasword)
-        dictonary = {"username":username, "pasword":pasword}
-        accounts.append(dictonary)
-        return True
+                if username not in accounts:
+                    in_loop = False
+                else:
+                    print("username already in use")
+        if back == False:
+            in_loop = False
+            while in_loop == False:     
+                pasword = str(input("ener a pasword or type 0 to exit"))
+                print(pasword)
+                if pasword == "0":
+                    back == True
+                    in_loop == True
+                    
+                    break
+                else:
+                    in_loop = validate_pasword(pasword)
+            if back == False:
+                dictonary = {"username":username, "pasword":pasword}
+                accounts.append(dictonary)
+                user = accounts[len(accounts)-1]
+                print(user)
+                return True
+        if back == True:
+            return False
     else:
         print("you are to young")
         return False
 
 def log_in():
+    global user
     used = False
+    back = False
     while used == False:
-        username = input("ener your username")
-        for i in accounts:
-            if i["username"] == username:
-                user = i
-                used = True
-                break
-        if used == False:
-            print("that username does not exist")
-    used = False     
-    while used == False:
-        pasword = input("ener your pasword")
-        if user["pasword"] == pasword:
+        username = str(input("ener your username or 0 to exit"))
+        print("username")
+        if username == "0":
+            back = True
             used = True
         else:
-            print("that is the incorect pasword")
+            for i in accounts:
+                if i["username"] == username:
+                    login_user = i
+                    used = True
+                    break
+            if used == False:
+                print("that username does not exist")
+    if back == False:     
+        for i in range(3):
+            pasword = str(input("ener your pasword or 0 to exit"))
+            if pasword == "0":
+                break
+            if login_user["pasword"] == pasword:
+                user = login_user
+                print(user)
+                break
+            else:
+                print("that is the incorect pasword")
+
+def loged_in():
+    print("loged in as "+user["username"])
+    
 
 value = 0
+user = None
 while value != 3:
     acount_valdiity = True
     value = login_menu()
     if value == 1:
         acount_valdiity = add_acount()
+        if acount_valdiity == True:
+            loged_in()
     elif value == 2:
         log_in()
+        if user != None:
+            loged_in()
     else:
         print("hope you use this tool again some time")
         time.sleep(1)
