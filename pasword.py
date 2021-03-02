@@ -1,10 +1,14 @@
 #to-do list
 #by ryan langstone
-import time
-pasword = []
+#finished on 2/3/2021 for school
+import time #so that i can do delays
+#declaring all global variables
+pasword_list = []
 accounts = []
 user = ""
+#defining functions
 def number_input(phrase, option):
+    #pass a input statment in and the option you want it to be and it will return the valid input
     digit = ""
     while digit == "":
         try: 
@@ -17,6 +21,7 @@ def number_input(phrase, option):
                 print ("has to be of one of the options provided")
     return  digit
 def validate_pasword(pasword):
+    #makes sure the pasword is valid, and tells you what is wrong
     acsept = True
     if len(pasword) <= 8:
         print("pasword to short")
@@ -33,6 +38,7 @@ def validate_pasword(pasword):
     return acsept
 
 def login_menu():
+    #gives the posible options at the start of the code, and gets you to chose one
     otions = [1,2,3]
     print("chose a mode by entering a number:")
     print("1: add a acount")
@@ -41,6 +47,7 @@ def login_menu():
     return  number_input("", otions)
 
 def add_acount():
+    # adds an acount to the acount variable 
     global user
     back = False
     age = number_input("enter your age", "")
@@ -59,7 +66,7 @@ def add_acount():
             in_loop = False
             while in_loop == False:     
                 pasword = str(input("ener a pasword or type 0 to exit"))
-                print(pasword)
+                print("")
                 if pasword == "0":
                     back == True
                     in_loop == True
@@ -68,10 +75,9 @@ def add_acount():
                 else:
                     in_loop = validate_pasword(pasword)
             if back == False:
-                dictonary = {"username":username, "pasword":pasword}
+                dictonary = {"username":username, "pasword":pasword, "data":[]}
                 accounts.append(dictonary)
-                user = accounts[len(accounts)-1]
-                print(user)
+                user = len(accounts)-1
                 return True
         if back == True:
             return False
@@ -80,6 +86,7 @@ def add_acount():
         return False
 
 def log_in():
+    #logs in if username and pasword match, else asks you to try again
     global user
     used = False
     back = False
@@ -90,7 +97,9 @@ def log_in():
             back = True
             used = True
         else:
+            user_number = -1
             for i in accounts:
+                user_number = user_number +1
                 if i["username"] == username:
                     login_user = i
                     used = True
@@ -103,18 +112,83 @@ def log_in():
             if pasword == "0":
                 break
             if login_user["pasword"] == pasword:
-                user = login_user
+                user = user_number
                 print(user)
                 break
             else:
                 print("that is the incorect pasword")
+def menu():
+    #prints all options once you have loged in and gets you to chose one
+    options = [1,2,3,4]
+    print("press 1 to add a task")
+    print("press 2 to view tasks")
+    print("press 3 to log out")
+    print("press 4 to exit program")
+    return  number_input("", options)
+
+def add_pasword():
+    #adds a "pasword" to the list that the user has
+    back = False
+    while back == False:
+        aplication = input("\nEnter the aplication the pasword acount is for, your username and then pasword \nall separated by commas\nor 0 to exit\n").split(",")
+        if len(aplication) == 1 and aplication[0] == "0":
+            back = True
+        elif len(aplication) == 3:
+            dictonary = {"use":aplication[0],"username":aplication[1],"pasword":aplication[2]}
+            accounts[user]["data"].append(dictonary)    
+            pasword_list.append(dictonary)
+        else:
+            print("you need to imput 3 things separated by comas\ne.g. w3schools,my_username,pass2020\nor type 0 to exit")
+
+def print_paswords():
+    #prints all the paswords that the usr has
+    print(accounts[user])
+    for i in accounts[user]["data"]:
+        print("aplication: "+i["use"]+", username: "+i["username"]+", pasword: "+i["pasword"])
+    in_loop = True
+    while in_loop == True:
+        word = input("search for aplication, or type 0 to go back")
+        print(word)
+        if word == "0":
+            break
+        else:
+            for i in accounts[user]["data"]:
+                if i["use"] == word:
+                    print("aplication: "+i["use"]+", username: "+i["username"]+", pasword: "+i["pasword"])
+
+def log_out():
+    #logs out and rings you back to the main menu
+    global user
+    user = None
+    print("you are now loged out")
+
 
 def loged_in():
-    print("loged in as "+user["username"])
-    
+    #main code for when you have loged in, directs to the aproptiate function
+    global value
+    print("loged in as "+accounts[user]["username"])
+    number = 0
+    while number != 4:
+        number = menu()
+        if number == 1:
+            add_pasword()
+        elif number == 2:
+            print_paswords()
+        elif number == 3:
+            log_out()
+            number == 4
+            break
+        else:
+            print("hope you use this tool again some time")
+            time.sleep(1)
+            print("see ya")
+            value = 3
 
+
+#extra global variables that are used for the while loop bellow 
 value = 0
 user = None
+#main code, directing you to the apropriate function based on what you chose
 while value != 3:
     acount_valdiity = True
     value = login_menu()
