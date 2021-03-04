@@ -9,21 +9,22 @@ user = ""
 #defining functions
 def number_input(phrase, option):
     #pass a input statment in and the option you want it to be and it will return the valid input
-    digit = ""
-    while digit == "":
+    digit = None
+    while digit == None:
         try: 
             digit = int(input(phrase))
             
         except:
-            if option == "":
-                print ("has to be a number")
-            else:
+            if option == []:
+                print ("has to be a hole number")
+        if digit not in option and option !=[]:
+                digit = None
                 print ("has to be of one of the options provided")
     return  digit
 def validate_pasword(pasword):
     #makes sure the pasword is valid, and tells you what is wrong
     acsept = True
-    if len(pasword) <= 8:
+    if len(pasword) < 8:
         print("pasword to short")
         acsept = False
     if not any(char.isdigit() for char in pasword):
@@ -41,7 +42,7 @@ def login_menu():
     #gives the posible options at the start of the code, and gets you to chose one
     otions = [1,2,3]
     print("chose a mode by entering a number:")
-    print("1: add a acount")
+    print("1: add an account")
     print("2: log in")
     print("3: exit")
     return  number_input("", otions)
@@ -50,13 +51,14 @@ def add_acount():
     # adds an acount to the acount variable 
     global user
     back = False
-    age = number_input("enter your age", "")
+    age = number_input("enter your age", [])
     if age >= 13:
         in_loop = True
         while in_loop == True:
-            username = input("ener a username or type 0 to exit")
-            if username == 0:
+            username = input("enter a username or type 0 to exit")
+            if username == "0":
                 back = True
+                in_loop = False
             else:
                 if username not in accounts:
                     in_loop = False
@@ -66,14 +68,14 @@ def add_acount():
             in_loop = False
             while in_loop == False:     
                 pasword = str(input("ener a pasword or type 0 to exit"))
-                print("")
                 if pasword == "0":
-                    back == True
-                    in_loop == True
+                    back = True
+                    in_loop = True
                     
                     break
                 else:
                     in_loop = validate_pasword(pasword)
+            print(back)
             if back == False:
                 dictonary = {"username":username, "pasword":pasword, "data":[]}
                 accounts.append(dictonary)
@@ -91,7 +93,7 @@ def log_in():
     used = False
     back = False
     while used == False:
-        username = str(input("ener your username or 0 to exit"))
+        username = str(input("enter your username or 0 to exit"))
         print("username")
         if username == "0":
             back = True
@@ -130,7 +132,7 @@ def add_pasword():
     #adds a "pasword" to the list that the user has
     back = False
     while back == False:
-        aplication = input("\nEnter the aplication the pasword acount is for, your username and then pasword \nall separated by commas\nor 0 to exit\n").split(",")
+        aplication = input("\nEnter the aplication the pasword account is for, your username and then pasword \nall separated by commas\nor 0 to exit\n").split(",")
         if len(aplication) == 1 and aplication[0] == "0":
             back = True
         elif len(aplication) == 3:
