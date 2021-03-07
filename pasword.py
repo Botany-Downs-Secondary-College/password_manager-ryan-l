@@ -144,7 +144,8 @@ def add_pasword():
 
 def print_paswords():
     #prints all the paswords that the usr has
-    print(accounts[user])
+    print(accounts)
+    
     for i in accounts[user]["data"]:
         print("aplication: "+i["use"]+", username: "+i["username"]+", pasword: "+i["pasword"])
     in_loop = True
@@ -158,16 +159,10 @@ def print_paswords():
                 if i["use"] == word:
                     print("aplication: "+i["use"]+", username: "+i["username"]+", pasword: "+i["pasword"])
 
-def log_out():
-    #logs out and rings you back to the main menu
-    global user
-    user = None
-    print("you are now loged out")
-
-
 def loged_in():
     #main code for when you have loged in, directs to the aproptiate function
     global value
+    global user
     print("loged in as "+accounts[user]["username"])
     number = 0
     while number != 4:
@@ -177,7 +172,8 @@ def loged_in():
         elif number == 2:
             print_paswords()
         elif number == 3:
-            log_out()
+            user = None
+            print("you are now loged out")
             number == 4
             break
         else:
