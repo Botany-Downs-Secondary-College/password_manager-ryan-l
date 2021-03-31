@@ -2,11 +2,19 @@
 #by ryan langstone
 #finished on 2/3/2021 for school
 import time #so that i can do delays
+import secure
+import ast
 #declaring all global variables
-pasword_list = []
 accounts = []
 user = ""
 #defining functions
+def update_file(sring):
+    my_file = open("account_info.txt", "w")
+    x = secure.encript(str(sring))
+    my_file.write(x)
+    my_file.close()
+
+
 def number_input(phrase, option):
     #pass a input statment in and the option you want it to be and it will return the valid input
     digit = None
@@ -21,6 +29,8 @@ def number_input(phrase, option):
                 digit = None
                 print ("has to be of one of the options provided")
     return  digit
+
+    
 def validate_pasword(pasword):
     #makes sure the pasword is valid, and tells you what is wrong
     acsept = True
@@ -38,14 +48,17 @@ def validate_pasword(pasword):
         acsept = False
     return acsept
 
+
 def login_menu():
     #gives the posible options at the start of the code, and gets you to chose one
     otions = [1,2,3]
     print("chose a mode by entering a number:")
     print("1: add an account")
-    print("2: log in")
+    if len(accounts) >0:
+        print("2: log in")
     print("3: exit")
     return  number_input("", otions)
+
 
 def add_acount():
     # adds an acount to the acount variable 
@@ -79,6 +92,7 @@ def add_acount():
             if back == False:
                 dictonary = {"username":username, "pasword":pasword, "data":[]}
                 accounts.append(dictonary)
+                update_file(accounts)
                 user = len(accounts)-1
                 return True
         if back == True:
@@ -86,6 +100,7 @@ def add_acount():
     else:
         print("you are to young")
         return False
+
 
 def log_in():
     #logs in if username and pasword match, else asks you to try again
@@ -119,6 +134,8 @@ def log_in():
                 break
             else:
                 print("that is the incorect pasword")
+
+
 def menu():
     #prints all options once you have loged in and gets you to chose one
     options = [1,2,3,4]
@@ -127,6 +144,7 @@ def menu():
     print("press 3 to log out")
     print("press 4 to exit program")
     return  number_input("", options)
+
 
 def add_pasword():
     #adds a "pasword" to the list that the user has
@@ -137,14 +155,14 @@ def add_pasword():
             back = True
         elif len(aplication) == 3:
             dictonary = {"use":aplication[0],"username":aplication[1],"pasword":aplication[2]}
-            accounts[user]["data"].append(dictonary)    
-            pasword_list.append(dictonary)
+            accounts[user]["data"].append(dictonary) 
+            update_file(accounts)   
         else:
             print("you need to imput 3 things separated by comas\ne.g. w3schools,my_username,pass2020\nor type 0 to exit")
 
+
 def print_paswords():
     #prints all the paswords that the usr has
-    print(accounts)
     
     for i in accounts[user]["data"]:
         print("aplication: "+i["use"]+", username: "+i["username"]+", pasword: "+i["pasword"])
@@ -158,6 +176,7 @@ def print_paswords():
             for i in accounts[user]["data"]:
                 if i["use"] == word:
                     print("aplication: "+i["use"]+", username: "+i["username"]+", pasword: "+i["pasword"])
+#print(secure.encript())
 
 def loged_in():
     #main code for when you have loged in, directs to the aproptiate function
@@ -184,6 +203,14 @@ def loged_in():
 
 
 #extra global variables that are used for the while loop bellow 
+try:
+    my_file = open("account_info.txt", "r")
+    info = my_file.read()
+    if len(my_file.read()) < 1:
+        accounts = secure.unencript(info)
+        accounts = ast.literal_eval(accounts)
+except:
+    pass
 value = 0
 user = None
 #main code, directing you to the apropriate function based on what you chose
@@ -195,9 +222,10 @@ while value != 3:
         if acount_valdiity == True:
             loged_in()
     elif value == 2:
-        log_in()
-        if user != None:
-            loged_in()
+        if len(accounts) >0:
+            log_in()
+            if user != None:
+                loged_in()
     else:
         print("hope you use this tool again some time")
         time.sleep(1)
